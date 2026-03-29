@@ -1,12 +1,13 @@
+loadaddr=0x82000000
+fdtaddr=0x88000000
+rdaddr=0x88080000
+
 console=ttyO0,115200n8
 uname_r=5.10.168-ti-r83
 
-netargs=setenv bootargs console=ttyO0,115200n8 root=/dev/mmcblk0p2 rw rootfstype=ext4 rootwait debug earlyprintk
+hostpcip=setenv serverip 192.168.178.21
+ipaddr=192.168.178.99
 
-netboot=echo Booting from microSD ...; \
-load mmc 0:1 ${loadaddr} uImage; \
-load mmc 0:1 ${fdtaddr} am335x-boneblack.dtb; \
-run netargs; \
-bootm ${loadaddr} - ${fdtaddr}
-
-uenvcmd=run netboot
+setenv netboot 'echo Booting from microSD ...; mmc dev 0; mmc rescan; setenv bootargs console=ttyS0,115200n8 root=/dev/mmcblk0p3 rw rootfstype=ext4 rootwait; load mmc 0:3 ${loadaddr} /boot/vmlinuz-5.10.168-ti-r83; load mmc 0:3 ${fdtaddr} /boot/dtbs/5.10.168-ti-r83/am335x-boneblack.dtb; load mmc 0:3 0x88080000 /boot/initrd.img-5.10.168-ti-r83; bootz ${loadaddr} 0x88080000:${filesize} ${fdtaddr}'
+setenv uenvcmd 'run netboot'
+run uenvcmd
