@@ -1,0 +1,83 @@
+# ================================
+# Memory layout
+# ================================
+loadaddr=0x82000000
+fdtaddr=0x88000000
+rdaddr=0x88080000
+
+# ================================
+# Network config (for TFTP/NFS)
+# ================================
+ipaddr=192.168.7.2
+serverip=192.168.7.1
+netmask=255.255.255.0
+ethact=ethernet@4a100000
+
+# ================================
+# Boot delay
+# ================================
+bootdelay=0
+
+# ================================
+# Kernel version (for SD/eMMC)
+# ================================
+uname_r=5.10.168-ti-r83
+
+# ================================
+# eMMC boot (mmc 1)
+# ================================
+emmcboot=echo === Trying eMMC ===; \
+mmc dev 1; mmc rescan; \
+if load mmc 1:3 ${loadaddr} /boot/vmlinuz-${uname_r}; then \
+    load mmc 1:3 ${fdtaddr} /boot/dtbs/${uname_r}/am335x-boneblack.dtb; \
+    load mmc 1:3 ${rdaddr} /boot/initrd.img-${uname_r}; \
+    setenv bootargs console=ttyO0,115200 root=/dev/mmcblk1p3 rw rootfstype=ext4 rootwait; \
+    bootz ${loadaddr} ${rdaddr}:${filesize} ${fdtaddr}; \
+fi
+
+# ================================
+# SD boot (mmc 0)
+# ================================
+sdboot=echo === Trying SD card ===; \
+mmc dev 0; mmc rescan; \
+if load mmc 0:3 ${loadaddr} /boot/vmlinuz-${uname_r}; then \
+    load mmc 0:3 ${fdtaddr} /boot/dtbs/${uname_r}/am335x-boneblack.dtb; \
+    load mmc 0:3 ${rdaddr} /boot/initrd.img-${uname_r}; \
+    setenv bootargs console=ttyO0,115200 root=/dev/mmcblk0p3 rw rootfstype=ext4 rootwait; \
+    bootz ${loadaddr} ${rdaddr}:${filesize} ${fdtaddr}; \
+fi
+
+# ================================
+# TFTP boot
+# ================================
+tftpbootcmd=echo === Trying TFTP ===; \
+sleep 2; \
+if ping ${serverip}; then \
+    tftpboot ${loadaddr} uImage && \
+    tftpboot ${fdtaddr} am335x-boneblack.dtb && \
+    tftpboot ${rdaddr} initramfs && \
+    setenv bootargs console=ttyO0,115200 root=/dev/ram0 rw initrd=${rdaddr} && \
+    bootm ${loadaddr} ${rdaddr} ${fdtaddr}; \
+fi
+
+# ================================
+# NFS boot (optional fallback)
+# ================================
+nfsboot=echo === Trying NFS ===; \
+sleep 2; \
+if ping ${serverip}; then \
+    tftpboot ${loadaddr} uImage && \
+    tftpboot ${fdtaddr} am335x-boneblack.dtb && \
+    setenv bootargs console=ttyO0,115200 root=/dev/nfs rw \
+    nfsroot=${serverip}:/nfsroot,v3 ip=dhcp && \
+    bootm ${loadaddr} - ${fdtaddr}; \
+fi
+
+# ================================
+# Main boot sequence
+# ================================
+uenvcmd=run emmcboot; \
+run sdboot; \
+run tftpbootcmd; \
+run nfsboot; \
+echo === BOOT FAILED ===
