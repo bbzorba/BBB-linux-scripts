@@ -1,0 +1,30 @@
+# Network configuration
+ipaddr=192.168.7.2
+serverip=192.168.7.1
+netmask=255.255.255.0
+
+# Use native Ethernet (CPSW)
+ethact=ethernet@4a100000
+
+# Ensure fast autoboot
+bootdelay=0
+
+# Memory addresses
+loadaddr=0x82000000
+fdtaddr=0x88000000
+rdaddr=0x88080000
+
+# Boot arguments
+bootargs=console=ttyO0,115200 root=/dev/ram0 rw initrd=0x88080000
+
+# Main boot command
+uenvcmd=echo === AUTO TFTP BOOT ===; \
+printenv ipaddr serverip ethact; \
+sleep 2; \
+tftpboot ${loadaddr} uImage; \
+echo Kernel OK; \
+tftpboot ${fdtaddr} am335x-boneblack.dtb; \
+echo DTB OK; \
+tftpboot ${rdaddr} initramfs; \
+echo Initramfs OK; \
+bootm ${loadaddr} ${rdaddr} ${fdtaddr}
