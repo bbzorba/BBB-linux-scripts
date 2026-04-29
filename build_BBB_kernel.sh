@@ -4,7 +4,6 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KERNEL_DIR="${SCRIPT_DIR}/../images/bbb_cross_build"
-BUILD_DIR="release"
 CROSS="arm-linux-gnueabi-"
 INSTALL_MOD_PATH="/media/bbzorba/rootfs"
 
@@ -20,8 +19,8 @@ fi
 
 cd "${KERNEL_DIR}"
 
-make ARCH=arm CROSS_COMPILE="${CROSS}" distclean
-make ARCH=arm CROSS_COMPILE="${CROSS}" bb.org_defconfig
+#make ARCH=arm CROSS_COMPILE="${CROSS}" distclean
+#make ARCH=arm CROSS_COMPILE="${CROSS}" bb.org_defconfig
 # make ARCH=arm CROSS_COMPILE="${CROSS}" menuconfig
 make ARCH=arm CROSS_COMPILE="${CROSS}" uImage dtbs LOADADDR=0x80008000 -j4
 make ARCH=arm CROSS_COMPILE="${CROSS}" modules -j4
@@ -34,4 +33,4 @@ else
 	echo "         sudo make ARCH=arm CROSS_COMPILE=${CROSS} INSTALL_MOD_PATH=${INSTALL_MOD_PATH} modules_install"
 fi
 
-echo "Build complete. Output is in: ${KERNEL_DIR}/${BUILD_DIR}"
+echo "Build complete. Output is in: ${KERNEL_DIR}"
