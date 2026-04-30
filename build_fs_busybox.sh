@@ -2,9 +2,10 @@
 
 set -euo pipefail
 
-BUSYBOX_DIR="/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/busybox-1.37.0"
 CROSS="arm-linux-gnueabi-"
-BUILD_DIR="/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/busybox-1.37.0/build"
+BUSYBOX_DIR="/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/busybox-1.37.0"
+STATIC_ROOTFS_DIR="/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/static_rootfs"
+KERNEL_DIR="/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/images/bbb_cross_build"
 
 if [[ ! -d "${BUSYBOX_DIR}" ]]; then
     echo "ERROR: BusyBox source directory not found: ${BUSYBOX_DIR}" >&2
@@ -18,24 +19,22 @@ fi
 
 cd "${BUSYBOX_DIR}"
 
-# Clean the source tree so out-of-tree builds work (O= requires a clean source)
-make mrproper
-# Remove and recreate the out-of-tree build directory (BusyBox requires it to exist)
-rm -rf "${BUILD_DIR}"
-mkdir -p "${BUILD_DIR}"
+make ARCH=arm CROSS_COMPILE="${CROSS}" defconfig
 
-make ARCH=arm CROSS_COMPILE="${CROSS}" O="${BUILD_DIR}" defconfig
-
-# Disable features that don't cross-compile for ARM:
-#  - SHA1/SHA256 HWACCEL uses x86-64 SHA-NI instructions
-#  - TC (traffic control) uses CBQ kernel headers removed in newer kernels
+# Disable features that don't cross-compile for ARM
 sed -i \
     -e 's/^CONFIG_SHA1_HWACCEL=.*/# CONFIG_SHA1_HWACCEL is not set/' \
     -e 's/^CONFIG_SHA256_HWACCEL=.*/# CONFIG_SHA256_HWACCEL is not set/' \
     -e 's/^CONFIG_TC=.*/# CONFIG_TC is not set/' \
-    "${BUILD_DIR}/.config"
-make ARCH=arm CROSS_COMPILE="${CROSS}" O="${BUILD_DIR}" oldconfig < /dev/null
+    -e 's/^CONFIG_FEATURE_SUID=.*/# CONFIG_FEATURE_SUID is not set/' \
+    "${BUSYBOX_DIR}/.config"
+# Static linking: replace in-place so kconfig doesn't see both lines
+sed -i 's/^# CONFIG_STATIC is not set$/CONFIG_STATIC=y/' "${BUSYBOX_DIR}/.config"
+make ARCH=arm CROSS_COMPILE="${CROSS}" oldconfig < /dev/null
 
-#make ARCH=arm CROSS_COMPILE="${CROSS}" O="${BUILD_DIR}" menuconfig
-make ARCH=arm CROSS_COMPILE="${CROSS}" O="${BUILD_DIR}" -j"$(nproc)"
-make ARCH=arm CROSS_COMPILE="${CROSS}" O="${BUILD_DIR}" install CONFIG_PREFIX="${BUILD_DIR}/_install"
+make ARCH=arm CROSS_COMPILE="${CROSS}" -j"$(nproc)"
+make ARCH=arm CROSS_COMPILE="${CROSS}" CONFIG_PREFIX="${STATIC_ROOTFS_DIR}" install
+
+#install kernel modules to the static rootfs so we can test insmod/modprobe on the BBB without needing to copy them over separately
+cd "${KERNEL_DIR}"
+make ARCH=arm CROSS_COMPILE="${CROSS}" INSTALL_MOD_PATH="${STATIC_ROOTFS_DIR}" modules_install
