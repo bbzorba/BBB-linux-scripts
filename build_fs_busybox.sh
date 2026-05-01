@@ -4,7 +4,7 @@ set -euo pipefail
 
 CROSS="arm-linux-gnueabi-"
 BUSYBOX_DIR="/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/busybox-1.37.0"
-STATIC_ROOTFS_DIR="/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/static_rootfs"
+STATIC_ROOTFS_DIR="/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/images/static_rootfs"
 KERNEL_DIR="/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/images/bbb_cross_build"
 
 if [[ ! -d "${BUSYBOX_DIR}" ]]; then

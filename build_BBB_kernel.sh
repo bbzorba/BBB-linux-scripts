@@ -19,11 +19,11 @@ fi
 
 cd "${KERNEL_DIR}"
 
-#make ARCH=arm CROSS_COMPILE="${CROSS}" distclean
-#make ARCH=arm CROSS_COMPILE="${CROSS}" bb.org_defconfig
-##make ARCH=arm CROSS_COMPILE="${CROSS}" menuconfig
-#make ARCH=arm CROSS_COMPILE="${CROSS}" uImage dtbs LOADADDR=0x80008000 -j4
-#make ARCH=arm CROSS_COMPILE="${CROSS}" modules -j4
+make ARCH=arm CROSS_COMPILE="${CROSS}" distclean
+make ARCH=arm CROSS_COMPILE="${CROSS}" bb.org_defconfig
+#make ARCH=arm CROSS_COMPILE="${CROSS}" menuconfig
+make ARCH=arm CROSS_COMPILE="${CROSS}" zImage uImage dtbs LOADADDR=0x80008000 -j4
+make ARCH=arm CROSS_COMPILE="${CROSS}" modules -j4
 
 if mountpoint -q "${INSTALL_MOD_PATH}" 2>/dev/null; then
 	sudo make ARCH=arm CROSS_COMPILE="${CROSS}" INSTALL_MOD_PATH="${INSTALL_MOD_PATH}" modules_install
