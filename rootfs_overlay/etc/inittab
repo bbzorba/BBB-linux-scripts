@@ -1,0 +1,6 @@
+# /etc/inittab - BusyBox init configuration for BeagleBone Black
+
+::sysinit:/etc/init.d/rcS
+ttyS0::respawn:/sbin/getty -L ttyS0 115200 vt100
+::ctrlaltdel:/sbin/reboot
+::shutdown:/bin/umount -a -r
