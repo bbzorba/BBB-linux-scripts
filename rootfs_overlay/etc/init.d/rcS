@@ -20,3 +20,25 @@ echo "Embedded Linux BBB - initramfs ready"
 # Bring up network interfaces defined in /etc/network/interfaces
 ifup lo
 ifup eth0 && echo "eth0: $(ifconfig eth0 | grep 'inet addr' || ip addr show eth0 | grep 'inet ')"
+
+
+for i in /etc/init.d/S??* ;do
+
+     # Ignore dangling symlinks (if any).
+     [ ! -f "$i" ] && continue
+
+     case "$i" in
+	*.sh)
+	    # Source shell script for speed.
+	    (
+		trap - INT QUIT TSTP
+		set start
+		. $i
+	    )
+	    ;;
+	*)
+	    # No sh extension, so fork subprocess.
+	    $i start
+	    ;;
+    esac
+done
