@@ -7,4 +7,7 @@ auto eth0
 iface eth0 inet static
     address 192.168.7.2
     netmask 255.255.255.0
-    gateway 192.168.7.1
+    # No gateway here — usb0 DHCP provides the default route for internet access.
+
+auto usb0
+iface usb0 inet dhcp

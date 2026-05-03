@@ -32,6 +32,7 @@ fi
 ###############################################COPY ROOTFS DIR###########################################
 # Copy kernel modules
 if [[ -d "${KERNEL_MODULES_DIR}" ]]; then
+    sudo mkdir -p "${ROOTFS_DIR}/lib/modules/"
     sudo cp -a "${KERNEL_MODULES_DIR}/." "${ROOTFS_DIR}/lib/modules/"
 else
     echo "ERROR: Kernel modules directory not found: ${KERNEL_MODULES_DIR}" >&2

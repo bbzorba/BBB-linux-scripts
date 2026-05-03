@@ -25,12 +25,13 @@ make ARCH=arm CROSS_COMPILE="${CROSS}" bb.org_defconfig
 make ARCH=arm CROSS_COMPILE="${CROSS}" zImage uImage dtbs LOADADDR=0x80008000 -j4
 make ARCH=arm CROSS_COMPILE="${CROSS}" modules -j4
 
-if mountpoint -q "${INSTALL_MOD_PATH}" 2>/dev/null; then
-	sudo make ARCH=arm CROSS_COMPILE="${CROSS}" INSTALL_MOD_PATH="${INSTALL_MOD_PATH}" modules_install
-else
-	echo "WARNING: ${INSTALL_MOD_PATH} is not mounted. Skipping modules_install."
-	echo "         Mount the SD card and run manually:"
-	echo "         sudo make ARCH=arm CROSS_COMPILE=${CROSS} INSTALL_MOD_PATH=${INSTALL_MOD_PATH} modules_install"
-fi
+## Modules must be installed to the SD card rootfs so they can be loaded by the kernel on boot.
+# if mountpoint -q "${INSTALL_MOD_PATH}" 2>/dev/null; then
+# 	sudo make ARCH=arm CROSS_COMPILE="${CROSS}" INSTALL_MOD_PATH="${INSTALL_MOD_PATH}" modules_install
+# else
+# 	echo "WARNING: ${INSTALL_MOD_PATH} is not mounted. Skipping modules_install."
+# 	echo "         Mount the SD card and run manually:"
+# 	echo "         sudo make ARCH=arm CROSS_COMPILE=${CROSS} INSTALL_MOD_PATH=${INSTALL_MOD_PATH} modules_install"
+# fi
 
 echo "Build complete. Output is in: ${KERNEL_DIR}"

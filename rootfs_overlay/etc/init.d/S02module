@@ -6,7 +6,10 @@
 case "$1" in
   start)
 	printf "Loading kernel modules : "
-	/sbin/modprobe g_ether
+	# Fixed MACs ensure the host always sees the same interface name (enxbe528e1c67f4).
+	# host_addr = MAC the PC g_ether NIC will have  (determines predictable enxXXX name)
+	# dev_addr  = MAC of BBB's own usb0 interface
+	/sbin/modprobe g_ether host_addr=be:52:8e:1c:67:f4 dev_addr=b2:d5:cc:d1:57:a2
 	[ $? = 0 ] && echo "OK" || echo "FAIL"
 	;;
   stop)

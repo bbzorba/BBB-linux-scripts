@@ -15,11 +15,23 @@ mount -t devtmpfs none /dev 2>/dev/null || {
 [ -c /dev/null ]    || mknod -m 666 /dev/null    c 1 3
 [ -c /dev/tty ]     || mknod -m 666 /dev/tty     c 5 0
 
-echo "Embedded Linux BBB - initramfs ready"
+# Create runtime directories required by ifup and s-s-d
+mkdir -p /var/run /var/lock /etc/network/if-pre-up.d /etc/network/if-up.d /etc/network/if-down.d /etc/network/if-post-down.d
 
-# Bring up network interfaces defined in /etc/network/interfaces
-ifup lo
-ifup eth0 && echo "eth0: $(ifconfig eth0 | grep 'inet addr' || ip addr show eth0 | grep 'inet ')"
+# Mount the ext4 rootfs partition (read-only) so kernel modules are accessible.
+# SD card layout: mmcblk0p1=BOOT(FAT) mmcblk0p2=swap mmcblk0p3=rootfs(ext4)
+mkdir -p /mnt/rootfs
+for part in /dev/mmcblk0p3 /dev/mmcblk0p2; do
+    [ -b "$part" ] && mount -t ext4 -o ro "$part" /mnt/rootfs 2>/dev/null && break
+done
+if [ -d /mnt/rootfs/lib/modules ]; then
+    mkdir -p /lib/modules
+    mount --bind /mnt/rootfs/lib/modules /lib/modules
+else
+    echo "Warning: /lib/modules not found on rootfs partition - modprobe will not work"
+fi
+
+echo "Embedded Linux BBB - initramfs ready"
 
 
 for i in /etc/init.d/S??* ;do
