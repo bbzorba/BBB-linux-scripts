@@ -3,7 +3,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-KERNEL_DIR="${SCRIPT_DIR}/../images/bbb_cross_build"
+ROOT_DIR="${SCRIPT_DIR}/../.."
+KERNEL_DIR="${ROOT_DIR}/images/bbb_cross_build"
 CROSS="arm-linux-gnueabi-"
 INSTALL_MOD_PATH="/media/${USER}/rootfs"
 

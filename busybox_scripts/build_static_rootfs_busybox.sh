@@ -4,7 +4,7 @@ set -euo pipefail
 
 CROSS="arm-linux-gnueabi-"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="${SCRIPT_DIR}/.."
+ROOT_DIR="${SCRIPT_DIR}/../.."
 BUSYBOX_DIR="${ROOT_DIR}/busybox-1.37.0"
 STATIC_ROOTFS_DIR="${ROOT_DIR}/images/static_rootfs"
 KERNEL_DIR="${ROOT_DIR}/images/bbb_cross_build"

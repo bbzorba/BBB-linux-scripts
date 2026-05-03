@@ -3,7 +3,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-UBOOT_DIR="${SCRIPT_DIR}/../images/u-boot"
+ROOT_DIR="${SCRIPT_DIR}/../.."
+UBOOT_DIR="${ROOT_DIR}/images/u-boot"
 BUILD_DIR="release"
 CROSS="arm-linux-gnueabi-"
 
