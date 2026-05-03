@@ -3,10 +3,11 @@
 set -euo pipefail
 
 CROSS="arm-linux-gnueabi-"
-BUSYBOX_DIR="/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/busybox-1.37.0"
-STATIC_ROOTFS_DIR="/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/images/static_rootfs"
-KERNEL_DIR="/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/images/bbb_cross_build"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="${SCRIPT_DIR}/.."
+BUSYBOX_DIR="${ROOT_DIR}/busybox-1.37.0"
+STATIC_ROOTFS_DIR="${ROOT_DIR}/images/static_rootfs"
+KERNEL_DIR="${ROOT_DIR}/images/bbb_cross_build"
 OVERLAY_DIR="${SCRIPT_DIR}/rootfs_overlay"
 
 if [[ ! -d "${BUSYBOX_DIR}" ]]; then

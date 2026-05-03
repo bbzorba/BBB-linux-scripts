@@ -2,11 +2,13 @@
 set -euo pipefail
 
 #################################################DIRECTORIES#############################################
-BUSYBOX_BUILD_DIR=/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/busybox-1.37.0
-KERNEL_IMAGE_DIR=/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/images/bbb_cross_build/arch/arm/boot
-KERNEL_MODULES_DIR=/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/images/static_rootfs/lib/modules/
-UBOOT_BUILD_DIR=/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/images/u-boot/release
-STATIC_ROOTFS_DIR="/home/bbzorba/Desktop/Embedded_Systems/BeagleBone_Black/images/static_rootfs"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="${SCRIPT_DIR}/.."
+BUSYBOX_BUILD_DIR="${ROOT_DIR}/busybox-1.37.0"
+KERNEL_IMAGE_DIR="${ROOT_DIR}/images/bbb_cross_build/arch/arm/boot"
+KERNEL_MODULES_DIR="${ROOT_DIR}/images/static_rootfs/lib/modules/"
+UBOOT_BUILD_DIR="${ROOT_DIR}/images/u-boot/release"
+STATIC_ROOTFS_DIR="${ROOT_DIR}/images/static_rootfs"
 BOOT_DIR="/media/${USER}/BOOT"
 ROOTFS_DIR="/media/${USER}/rootfs"
 #########################################################################################################
