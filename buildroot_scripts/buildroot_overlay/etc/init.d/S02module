@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# S02module - load g_ether USB gadget driver at startup
+# Runs before S40network so usb0 exists when ifup -a is called.
+# Fixed MACs ensure the host NM always sees the same interface name (enxbe528e1c67f4).
+#   host_addr = MAC the host g_ether NIC will have (determines predictable enxXXX name)
+#   dev_addr  = MAC of BBB's own usb0 interface
+#
+
+case "$1" in
+  start)
+    printf "Loading kernel modules : "
+    /sbin/modprobe g_ether host_addr=be:52:8e:1c:67:f4 dev_addr=b2:d5:cc:d1:57:a2
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+    ;;
+  stop)
+    printf "Unloading kernel modules : "
+    /sbin/rmmod g_ether
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+    ;;
+  restart|reload)
+    "$0" stop
+    "$0" start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+esac
+
+exit $?

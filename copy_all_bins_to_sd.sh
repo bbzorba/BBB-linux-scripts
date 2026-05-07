@@ -65,10 +65,19 @@ else
     exit 1
 fi
 
-# Create initramfs from either static_rootfs or dynamic_rootfs depending on the user's choice and place it in /payload/
-read -p "Select rootfs type (static/dynamic) [s/d]: " rootfs_choice
-case "$rootfs_choice" in
+# Create initramfs from either static_rootfs or dynamic_rootfs.
+# ROOTFS_MODE can be set to static|dynamic (or s|d) for non-interactive usage.
+rootfs_choice="${ROOTFS_MODE:-}"
+if [[ -z "${rootfs_choice}" ]]; then
+    read -p "Select rootfs type (static/dynamic) [s/d]: " rootfs_choice
+fi
+
+case "${rootfs_choice}" in
     s|S)
+        ROOTFS_DIR="${STATIC_ROOTFS_DIR}"
+        ROOTFS_NAME="static_rootfs"
+        ;;
+    static|STATIC)
         ROOTFS_DIR="${STATIC_ROOTFS_DIR}"
         ROOTFS_NAME="static_rootfs"
         ;;
@@ -76,8 +85,13 @@ case "$rootfs_choice" in
         ROOTFS_DIR="${DYNAMIC_ROOTFS_DIR}"
         ROOTFS_NAME="dynamic_rootfs"
         ;;
+    dynamic|DYNAMIC)
+        ROOTFS_DIR="${DYNAMIC_ROOTFS_DIR}"
+        ROOTFS_NAME="dynamic_rootfs"
+        ;;
     *)
-        echo "ERROR: Invalid input. Please enter 's' for static or 'd' for dynamic." >&2
+        echo "ERROR: Invalid rootfs selection: ${rootfs_choice}" >&2
+        echo "       Use s|d or static|dynamic." >&2
         exit 1
         ;;
 esac
