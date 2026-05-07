@@ -3,13 +3,11 @@
 auto lo
 iface lo inet loopback
 
-# eth0: static IP for direct host <-> BBB Ethernet connection
 auto eth0
 iface eth0 inet static
     address 192.168.7.2
     netmask 255.255.255.0
-    # No gateway — usb0 DHCP provides the default route for internet access.
+    # No gateway here — usb0 DHCP provides the default route for internet access.
 
-# usb0: DHCP via USB g_ether gadget (internet sharing from host NM)
 auto usb0
 iface usb0 inet dhcp

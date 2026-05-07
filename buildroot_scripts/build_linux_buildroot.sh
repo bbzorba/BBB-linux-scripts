@@ -45,3 +45,4 @@ if ! file "${CC_PATH}" | grep -q 'x86-64'; then
 fi
 
 make -j"$(nproc)"
+echo "Buildroot build complete! Output images are in ${BUILDROOT_DIR}/output/images/"
