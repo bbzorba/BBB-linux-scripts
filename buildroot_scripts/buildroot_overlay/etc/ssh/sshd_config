@@ -1,0 +1,17 @@
+# sshd_config for BeagleBone Black development image
+
+# Use only RSA host key - avoids ed25519 signing issues on ARM32
+HostKey /etc/ssh/ssh_host_rsa_key
+
+# Disable post-quantum KEX (sntrup761x25519) - crashes sshd on ARM32 Cortex-A8.
+# Use only classical ECDH/DH key exchange algorithms.
+KexAlgorithms curve25519-sha256,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group14-sha256
+
+# Allow root login with public key or password
+PermitRootLogin yes
+PermitEmptyPasswords yes
+PasswordAuthentication yes
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+
+Subsystem sftp /usr/libexec/sftp-server

@@ -19,6 +19,9 @@ fi
 
 cd "${BUILDROOT_DIR}"
 
+#0. Clean previous build artifacts (optional, but ensures a clean build).
+# make distclean
+
 # 1. Use our custom config directly as .config (copy every time to pick up changes).
 cp "${CUSTOM_CONFIG}" .config
 

@@ -3,7 +3,7 @@
 set -euo pipefail
 
 BBB_ETH_IP="192.168.7.2"
-HOST_ETH_IP="192.168.7.3"
+HOST_ETH_IP="192.168.7.1"
 bbb_eth="eno1"
 
 sudo ip addr add "$HOST_ETH_IP/24" dev "$bbb_eth" 
